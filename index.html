@@ -38,14 +38,7 @@
     </script>
 
     <style>
-        body {
-            background-color: #050505;
-            background-image: 
-                radial-gradient(circle at 15% 50%, rgba(188, 19, 254, 0.15) 0%, transparent 25%),
-                radial-gradient(circle at 85% 30%, rgba(0, 243, 255, 0.15) 0%, transparent 25%);
-            color: #e2e8f0;
-            overflow-x: hidden;
-        }
+        body { background-color: #050505; background-image: radial-gradient(circle at 15% 50%, rgba(188, 19, 254, 0.15) 0%, transparent 25%), radial-gradient(circle at 85% 30%, rgba(0, 243, 255, 0.15) 0%, transparent 25%); color: #e2e8f0; overflow-x: hidden; }
         .glass { background: rgba(19, 19, 31, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); }
         .glass-card { background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease; }
         .glass-card:hover { border-color: rgba(0, 243, 255, 0.5); box-shadow: 0 0 20px rgba(0, 243, 255, 0.2); transform: translateY(-5px); }
@@ -66,7 +59,6 @@
                         CYBER<span class="text-white">HOST</span>
                     </span>
                 </div>
-                
                 <div class="hidden md:block">
                     <div class="ml-10 flex items-baseline space-x-4">
                         <a onclick="router('home')" class="cursor-pointer hover:text-cyber-primary px-3 py-2 rounded-md text-sm font-medium transition-colors">Ana Sayfa</a>
@@ -75,29 +67,21 @@
                         <a id="nav-admin" onclick="router('admin')" class="hidden cursor-pointer text-cyber-danger hover:text-red-400 px-3 py-2 rounded-md text-sm font-medium transition-colors">Admin Panel</a>
                     </div>
                 </div>
-
                 <div class="flex items-center gap-4">
                     <div id="user-balance-display" class="hidden md:flex flex-col items-end text-right">
                         <span class="text-xs text-gray-400">Bakiye</span>
                         <span class="text-cyber-success font-bold font-mono" id="nav-balance">0.00 TL</span>
                     </div>
-
                     <button onclick="toggleCart()" class="relative p-2 text-gray-400 hover:text-white transition-colors">
                         <i class="fa-solid fa-cart-shopping text-xl"></i>
                         <span id="cart-count" class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-black transform translate-x-1/4 -translate-y-1/4 bg-cyber-primary rounded-full">0</span>
                     </button>
-
                     <div id="auth-buttons">
-                        <button onclick="router('auth')" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all backdrop-blur-sm border border-white/10">
-                            Giriş Yap
-                        </button>
+                        <button onclick="router('auth')" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all backdrop-blur-sm border border-white/10">Giriş Yap</button>
                     </div>
-                    
                     <div id="user-menu" class="hidden relative group">
                         <button class="flex items-center gap-2 text-white hover:text-cyber-primary transition-colors">
-                            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-cyber-primary to-cyber-secondary flex items-center justify-center font-bold">
-                                <i class="fa-solid fa-user"></i>
-                            </div>
+                            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-cyber-primary to-cyber-secondary flex items-center justify-center font-bold"><i class="fa-solid fa-user"></i></div>
                         </button>
                         <div class="absolute right-0 mt-2 w-48 bg-cyber-dark glass rounded-md shadow-lg py-1 border border-white/10 hidden group-hover:block z-50">
                             <a onclick="router('dashboard')" class="block px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white cursor-pointer">Hesabım</a>
@@ -125,9 +109,7 @@
                         <span>Toplam:</span>
                         <span class="text-cyber-primary" id="cart-total">0.00 TL</span>
                     </div>
-                    <button onclick="checkout()" class="w-full bg-gradient-to-r from-cyber-primary to-cyber-secondary text-white font-bold py-3 px-4 rounded hover:opacity-90 transition-opacity shadow-lg shadow-cyber-primary/20">
-                        Ödemeyi Tamamla
-                    </button>
+                    <button onclick="checkout()" class="w-full bg-gradient-to-r from-cyber-primary to-cyber-secondary text-white font-bold py-3 px-4 rounded hover:opacity-90 transition-opacity shadow-lg shadow-cyber-primary/20">Ödemeyi Tamamla</button>
                     <p class="text-xs text-center text-gray-500 mt-2">Ödeme bakiyenizden düşülecektir.</p>
                 </div>
             </div>
@@ -135,14 +117,10 @@
     </div>
 
     <div id="toast" class="fixed bottom-5 right-5 z-[70] transform transition-all duration-300 translate-y-20 opacity-0">
-        <div class="glass px-6 py-4 rounded-lg border-l-4 shadow-lg flex items-center gap-3">
-            <i id="toast-icon" class="fa-solid"></i>
-            <span id="toast-message" class="font-medium"></span>
-        </div>
+        <div class="glass px-6 py-4 rounded-lg border-l-4 shadow-lg flex items-center gap-3"><i id="toast-icon" class="fa-solid"></i><span id="toast-message" class="font-medium"></span></div>
     </div>
 
     <script>
-        /* --- AYARLAR & SABİTLER --- */
         const DB_KEYS = {
             CURRENT_USER: 'cyberhost_session_user',
             ORDERS: 'cyberhost_local_orders',
@@ -168,12 +146,10 @@
             { user: "Caner D.", product: "Dedicated i9", comment: "Performans canavarı. Bu fiyata bu kalite yok.", rating: 5 },
             { user: "Selin B.", product: "Ekonomik VDS", comment: "Öğrenci dostu fiyatlar, panel çok kullanışlı.", rating: 4 },
             { user: "Gamer_34", product: "DDoS Koruması", comment: "Saldırılar anında kesildi, teşekkürler CyberHost.", rating: 5 },
-            { user: "TechMaster", product: "Ultra VDS", comment: "NVMe diskler sayesinde IO değerleri uçuyor.", rating: 5 },
         ];
 
         let cart = [];
 
-        /* --- BAŞLATMA --- */
         function init() {
             if (!localStorage.getItem(DB_KEYS.ORDERS)) localStorage.setItem(DB_KEYS.ORDERS, JSON.stringify([]));
             if (!localStorage.getItem(DB_KEYS.TICKETS)) localStorage.setItem(DB_KEYS.TICKETS, JSON.stringify([]));
@@ -181,7 +157,6 @@
             router('home');
         }
 
-        /* --- KİMLİK DOĞRULAMA --- */
         function getCurrentUser() {
             return JSON.parse(localStorage.getItem(DB_KEYS.CURRENT_USER));
         }
@@ -201,7 +176,6 @@
                 els.menu.classList.remove('hidden');
                 els.balDisp.classList.remove('hidden');
                 els.bal.textContent = formatCurrency(user.balance);
-                
                 if (user.role === 'admin') {
                     els.admin.classList.remove('hidden');
                 } else {
@@ -215,6 +189,8 @@
             }
         }
 
+        /* --- NETLIFY BACKEND BAĞLANTILARI --- */
+        
         async function login(username, password) {
             showToast('Giriş yapılıyor...', 'info');
             try {
@@ -223,16 +199,14 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, password })
                 });
-
                 const data = await response.json();
-
                 if (response.ok && data.success) {
                     localStorage.setItem(DB_KEYS.CURRENT_USER, JSON.stringify(data.user));
                     showToast('Giriş başarılı!', 'success');
                     checkAuth();
                     router('dashboard');
                 } else {
-                    showToast(data.message || 'Kullanıcı adı veya şifre hatalı.', 'error');
+                    showToast(data.message || 'Hata.', 'error');
                 }
             } catch (error) {
                 console.error("Login Hatası:", error);
@@ -241,31 +215,62 @@
         }
 
         async function register(username, password) {
-            if (!username || !password) {
-                showToast('Lütfen tüm alanları doldurun.', 'error');
-                return;
-            }
-            showToast('Kayıt yapılıyor...', 'info');
+            if (!username || !password) return showToast('Eksik bilgi.', 'error');
+            showToast('Kayıt olunuyor...', 'info');
             try {
                 const response = await fetch('/.netlify/functions/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, password })
                 });
-
                 const data = await response.json();
-
                 if (response.ok && data.success) {
-                    showToast('Kayıt Başarılı! Şimdi giriş yapabilirsiniz.', 'success');
-                    document.getElementById('reg-user').value = '';
-                    document.getElementById('reg-pass').value = '';
+                    showToast('Kayıt Başarılı! Giriş yapabilirsiniz.', 'success');
                     toggleAuth('login');
                 } else {
-                    showToast(data.message || 'Kayıt yapılamadı.', 'error');
+                    showToast(data.message || 'Hata.', 'error');
                 }
             } catch (error) {
                 console.error("Register Hatası:", error);
                 showToast('Sunucu hatası.', 'error');
+            }
+        }
+
+        async function fetchAdminUsers() {
+            const listContainer = document.getElementById('admin-user-list');
+            if(!listContainer) return;
+            listContainer.innerHTML = '<div class="text-gray-400 p-4 text-center"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Veriler çekiliyor...</div>';
+
+            try {
+                const response = await fetch('/.netlify/functions/getUsers');
+                
+                if (response.status === 404) {
+                    listContainer.innerHTML = '<div class="text-red-400 p-4 text-center">API Bulunamadı (404). Dosyayı yüklediniz mi?</div>';
+                    return;
+                }
+
+                const users = await response.json();
+
+                if(response.ok) {
+                    if(users.length === 0) {
+                        listContainer.innerHTML = '<div class="text-gray-500 p-4 text-center">Kullanıcı yok.</div>';
+                        return;
+                    }
+                    listContainer.innerHTML = users.map(u => `
+                        <div class="flex justify-between items-center bg-white/5 p-3 rounded mb-2 text-sm border border-white/5 hover:bg-white/10 transition-colors">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-gray-700 to-black flex items-center justify-center text-xs"><i class="fa-solid fa-user"></i></div>
+                                <div><span class="text-white font-medium block">${u.username}</span><span class="text-xs text-gray-500">ID: ${u.id} | Rol: ${u.role}</span></div>
+                            </div>
+                            <span class="font-mono text-cyber-success">${formatCurrency(u.balance)}</span>
+                        </div>
+                    `).join('');
+                } else {
+                    listContainer.innerHTML = `<div class="text-red-400 p-4 text-center">Hata: ${users.error || 'Bilinmeyen hata'}</div>`;
+                }
+            } catch (error) {
+                console.error("Fetch Hatası:", error);
+                listContainer.innerHTML = `<div class="text-red-400 p-4 text-center">Bağlantı Hatası: ${error.message}</div>`;
             }
         }
 
@@ -278,50 +283,7 @@
             showToast('Çıkış yapıldı.', 'info');
         }
 
-        /* --- YENİ: ADMIN KULLANICI LİSTESİ ÇEKME --- */
-        async function fetchAdminUsers() {
-            const listContainer = document.getElementById('admin-user-list');
-            if(!listContainer) return;
-
-            listContainer.innerHTML = '<div class="text-gray-400 p-4 text-center"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Kullanıcılar yükleniyor...</div>';
-
-            try {
-                const response = await fetch('/.netlify/functions/getUsers');
-                const users = await response.json();
-
-                if(response.ok) {
-                    if(users.length === 0) {
-                        listContainer.innerHTML = '<div class="text-gray-500 p-4 text-center">Kullanıcı bulunamadı.</div>';
-                        return;
-                    }
-
-                    listContainer.innerHTML = users.map(u => `
-                        <div class="flex justify-between items-center bg-white/5 p-3 rounded mb-2 text-sm border border-white/5 hover:bg-white/10 transition-colors">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-gray-700 to-black flex items-center justify-center text-xs">
-                                    <i class="fa-solid fa-user"></i>
-                                </div>
-                                <div>
-                                    <span class="text-white font-medium block">${u.username}</span>
-                                    <span class="text-xs text-gray-500">ID: ${u.id} | Rol: ${u.role}</span>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <span class="font-mono text-cyber-success">${formatCurrency(u.balance)}</span>
-                                <button onclick="adminAddBalancePrompt(${u.id})" class="text-cyber-primary hover:text-white transition-colors" title="Bakiye Ekle"><i class="fa-solid fa-circle-plus text-lg"></i></button>
-                            </div>
-                        </div>
-                    `).join('');
-                } else {
-                    listContainer.innerHTML = '<div class="text-red-400 p-4 text-center">Veri çekilemedi.</div>';
-                }
-            } catch (error) {
-                console.error("Admin Users Hata:", error);
-                listContainer.innerHTML = '<div class="text-red-400 p-4 text-center">Sunucu bağlantı hatası.</div>';
-            }
-        }
-
-        /* --- SAYFA YÖNLENDİRME --- */
+        /* --- ROUTER --- */
         function router(page) {
             const app = document.getElementById('app');
             const user = getCurrentUser();
@@ -347,11 +309,11 @@
             else if(page === 'contact') app.innerHTML = renderContact();
             else if(page === 'admin') {
                 app.innerHTML = renderAdmin();
-                fetchAdminUsers(); // Admin sayfası açılınca verileri çek
+                fetchAdminUsers(); 
             }
         }
 
-        /* --- HTML TEMPLATES --- */
+        /* --- TEMPLATES --- */
         function renderHome() {
             const cards = REVIEWS.map(r => `
                 <div class="glass-card w-[350px] p-6 rounded-xl mx-4 flex-shrink-0 border border-white/5">
@@ -415,11 +377,8 @@
             const user = getCurrentUser();
             const tickets = JSON.parse(localStorage.getItem(DB_KEYS.TICKETS)).filter(t => t.userId === user.id);
             const orders = JSON.parse(localStorage.getItem(DB_KEYS.ORDERS)).filter(o => o.userId === user.id).reverse();
-
             const ticketsHtml = tickets.length ? tickets.map(t => `<div class="glass p-4 rounded mb-2 border-l-2 ${t.status === 'open' ? 'border-cyber-primary' : 'border-green-500'}"><div class="flex justify-between"><p class="text-white">${t.message}</p><span class="text-xs px-2 py-1 rounded bg-white/10">${t.status}</span></div>${t.reply ? `<div class="mt-2 text-sm text-gray-300 bg-white/5 p-2 rounded"><span class="text-cyber-secondary font-bold">Admin:</span> ${t.reply}</div>` : ''}</div>`).join('') : '<div class="text-gray-500 text-sm">Talep yok.</div>';
-
             const ordersHtml = orders.length ? orders.map(o => `<div class="bg-white/5 p-4 rounded mb-2 border border-white/5"><div class="flex justify-between mb-2"><span class="text-white font-bold text-sm">#${o.id}</span><div class="flex gap-2"><span class="text-xs px-2 border rounded ${o.status==='Aktif'?'text-green-400 border-green-400':'text-yellow-400 border-yellow-400'}">${o.status||'Hazırlanıyor'}</span><span class="text-cyber-primary font-mono text-sm">${formatCurrency(o.total)}</span></div></div><div class="text-xs text-gray-400">Paketler: ${o.items.map(i=>i.name).join(', ')}</div>${o.adminMessage ? `<div class="mt-2 p-2 bg-cyber-primary/10 border-l-2 border-cyber-primary text-xs text-gray-200"><b>Mesaj:</b> ${o.adminMessage}</div>` : ''}</div>`).join('') : '<div class="text-gray-500 text-sm">Sipariş yok.</div>';
-
             return `
                 <div class="animate-slide-in grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div class="lg:col-span-1 space-y-6">
@@ -427,20 +386,12 @@
                             <div class="w-20 h-20 mx-auto rounded-full bg-gradient-to-tr from-cyber-primary to-cyber-secondary flex items-center justify-center text-3xl font-bold mb-4"><i class="fa-solid fa-user"></i></div>
                             <h2 class="text-2xl font-bold text-white">${user.username}</h2>
                             <p class="text-gray-400 capitalize">${user.role}</p>
-                            <div class="mt-6 p-4 bg-black/30 rounded-xl border border-white/5">
-                                <p class="text-sm text-gray-400">Bakiye</p><p class="text-3xl font-mono text-cyber-success my-2">${formatCurrency(user.balance)}</p>
-                                <a href="https://discord.com/invite/kxHhvZcPzH" class="block w-full bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold py-2 rounded">Bakiye Yükle</a>
-                            </div>
+                            <div class="mt-6 p-4 bg-black/30 rounded-xl border border-white/5"><p class="text-sm text-gray-400">Bakiye</p><p class="text-3xl font-mono text-cyber-success my-2">${formatCurrency(user.balance)}</p><a href="#" class="block w-full bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold py-2 rounded">Bakiye Yükle</a></div>
                             <button onclick="logout()" class="mt-4 text-red-400 text-sm">Çıkış Yap</button>
                         </div>
-                        <div class="glass p-6 rounded-2xl h-full">
-                            <div class="flex justify-between mb-6"><h3 class="font-bold text-white">Destek</h3><button onclick="router('contact')" class="text-xs bg-cyber-primary text-black px-3 py-1 rounded font-bold">Yeni</button></div>
-                            <div class="space-y-4 max-h-[300px] overflow-y-auto custom-scrollbar pr-2">${ticketsHtml}</div>
-                        </div>
+                        <div class="glass p-6 rounded-2xl h-full"><div class="flex justify-between mb-6"><h3 class="font-bold text-white">Destek</h3><button onclick="router('contact')" class="text-xs bg-cyber-primary text-black px-3 py-1 rounded font-bold">Yeni</button></div><div class="space-y-4 max-h-[300px] overflow-y-auto custom-scrollbar pr-2">${ticketsHtml}</div></div>
                     </div>
-                    <div class="lg:col-span-2">
-                        <div class="glass p-6 rounded-2xl h-full"><h3 class="text-xl font-bold text-white mb-6 border-b border-white/10 pb-2">Siparişlerim</h3><div class="space-y-4 overflow-y-auto max-h-[700px] custom-scrollbar pr-2">${ordersHtml}</div></div>
-                    </div>
+                    <div class="lg:col-span-2"><div class="glass p-6 rounded-2xl h-full"><h3 class="text-xl font-bold text-white mb-6 border-b border-white/10 pb-2">Siparişlerim</h3><div class="space-y-4 overflow-y-auto max-h-[700px] custom-scrollbar pr-2">${ordersHtml}</div></div></div>
                 </div>`;
         }
 
@@ -449,56 +400,23 @@
         function renderAdmin() {
             const tickets = JSON.parse(localStorage.getItem(DB_KEYS.TICKETS));
             const orders = JSON.parse(localStorage.getItem(DB_KEYS.ORDERS)).sort((a,b) => new Date(b.date) - new Date(a.date));
-
-            const tHtml = tickets.map(t => `
-                <div class="bg-white/5 p-4 rounded mb-2 border border-white/5">
-                    <div class="flex justify-between text-sm mb-2"><span class="text-cyber-primary font-bold">User#${t.userId}</span><span class="text-gray-500 text-xs">ID:${t.id}</span></div>
-                    <p class="text-gray-300 text-sm">"${t.message}"</p>
-                    ${t.reply ? `<div class="text-xs text-green-400 border-t border-white/10 pt-2">Cevap: ${t.reply}</div>` : 
-                    `<div class="flex gap-2 mt-2"><input id="reply-${t.id}" class="flex-1 bg-black/50 border border-white/10 rounded px-2 text-sm text-white"><button onclick="adminReplyTicket(${t.id})" class="bg-cyber-success text-black px-3 text-xs font-bold rounded">Yanıtla</button></div>`}
-                </div>`).join('');
-
-            const oHtml = orders.map(o => `
-                <div class="grid grid-cols-12 gap-2 items-center bg-white/5 p-4 rounded mb-2 border border-white/5 text-sm">
-                    <div class="col-span-1 text-gray-500">#${o.id.toString().slice(-4)}</div>
-                    <div class="col-span-2 text-white truncate">User#${o.userId}</div>
-                    <div class="col-span-3 text-gray-400 truncate">${o.items.map(i => i.name).join(',')}</div>
-                    <div class="col-span-2 ${o.status==='Aktif'?'text-green-400':'text-yellow-400'} text-xs font-bold uppercase">${o.status||'Hazırlanıyor'}</div>
-                    <div class="col-span-2 text-right font-mono text-cyber-primary">${formatCurrency(o.total)}</div>
-                    <div class="col-span-2 text-right"><button onclick="adminManageOrder(${o.id})" class="bg-white/10 hover:bg-cyber-primary hover:text-black text-white px-2 py-1 rounded text-xs">Yönet</button></div>
-                </div>`).join('');
+            const tHtml = tickets.map(t => `<div class="bg-white/5 p-4 rounded mb-2 border border-white/5"><div class="flex justify-between text-sm mb-2"><span class="text-cyber-primary font-bold">User#${t.userId}</span><span class="text-gray-500 text-xs">ID:${t.id}</span></div><p class="text-gray-300 text-sm">"${t.message}"</p>${t.reply ? `<div class="text-xs text-green-400 border-t border-white/10 pt-2">Cevap: ${t.reply}</div>` : `<div class="flex gap-2 mt-2"><input id="reply-${t.id}" class="flex-1 bg-black/50 border border-white/10 rounded px-2 text-sm text-white"><button onclick="adminReplyTicket(${t.id})" class="bg-cyber-success text-black px-3 text-xs font-bold rounded">Yanıtla</button></div>`}</div>`).join('');
+            const oHtml = orders.map(o => `<div class="grid grid-cols-12 gap-2 items-center bg-white/5 p-4 rounded mb-2 border border-white/5 text-sm"><div class="col-span-1 text-gray-500">#${o.id.toString().slice(-4)}</div><div class="col-span-2 text-white truncate">User#${o.userId}</div><div class="col-span-3 text-gray-400 truncate">${o.items.map(i => i.name).join(',')}</div><div class="col-span-2 ${o.status==='Aktif'?'text-green-400':'text-yellow-400'} text-xs font-bold uppercase">${o.status||'Hazırlanıyor'}</div><div class="col-span-2 text-right font-mono text-cyber-primary">${formatCurrency(o.total)}</div><div class="col-span-2 text-right"><button onclick="adminManageOrder(${o.id})" class="bg-white/10 hover:bg-cyber-primary hover:text-black text-white px-2 py-1 rounded text-xs">Yönet</button></div></div>`).join('');
 
             return `
                 <div class="animate-slide-in space-y-8">
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <div class="glass p-6 rounded-2xl h-[500px] flex flex-col">
-                            <h3 class="font-bold text-white mb-4 border-b border-white/10 pb-2">Destek Talepleri</h3>
-                            <div class="flex-1 overflow-y-auto custom-scrollbar pr-2">${tHtml || 'Yok'}</div>
-                        </div>
+                        <div class="glass p-6 rounded-2xl h-[500px] flex flex-col"><h3 class="font-bold text-white mb-4 border-b border-white/10 pb-2">Destek Talepleri</h3><div class="flex-1 overflow-y-auto custom-scrollbar pr-2">${tHtml || 'Yok'}</div></div>
                         <div class="space-y-8 h-[500px] flex flex-col">
-                            <div class="glass p-6 rounded-2xl">
-                                <h3 class="text-sm font-bold text-gray-400 mb-4">Özet</h3>
-                                <div class="grid grid-cols-2 gap-4 text-center">
-                                    <div class="bg-black/30 p-4 rounded"><span class="text-2xl font-bold text-cyber-primary">${orders.length}</span><span class="block text-xs text-gray-400">Sipariş</span></div>
-                                    <div class="bg-black/30 p-4 rounded"><span class="text-2xl font-bold text-cyber-secondary">${tickets.length}</span><span class="block text-xs text-gray-400">Destek</span></div>
-                                </div>
-                            </div>
-                            <div class="glass p-6 rounded-2xl flex-1 flex flex-col">
-                                <h3 class="font-bold text-white mb-4 border-b border-white/10 pb-2">Kullanıcılar (DB)</h3>
-                                <div id="admin-user-list" class="flex-1 overflow-y-auto custom-scrollbar pr-2">
-                                    <div class="text-gray-500 p-4 text-center">Yükleniyor...</div>
-                                </div>
-                            </div>
+                            <div class="glass p-6 rounded-2xl"><h3 class="text-sm font-bold text-gray-400 mb-4">Özet</h3><div class="grid grid-cols-2 gap-4 text-center"><div class="bg-black/30 p-4 rounded"><span class="text-2xl font-bold text-cyber-primary">?</span><span class="block text-xs text-gray-400">Üye (DB)</span></div><div class="bg-black/30 p-4 rounded"><span class="text-2xl font-bold text-cyber-secondary">${orders.length}</span><span class="block text-xs text-gray-400">Sipariş</span></div></div></div>
+                            <div class="glass p-6 rounded-2xl flex-1 flex flex-col"><h3 class="font-bold text-white mb-4 border-b border-white/10 pb-2">Kullanıcılar (DB)</h3><div id="admin-user-list" class="flex-1 overflow-y-auto custom-scrollbar pr-2"><div class="text-gray-500 p-4 text-center">Yükleniyor...</div></div></div>
                         </div>
                     </div>
-                    <div class="glass p-6 rounded-2xl">
-                        <h3 class="font-bold text-white mb-6 border-b border-white/10 pb-2">Siparişler</h3>
-                        <div class="max-h-[400px] overflow-y-auto custom-scrollbar pr-2">${oHtml || 'Sipariş yok'}</div>
-                    </div>
+                    <div class="glass p-6 rounded-2xl"><h3 class="font-bold text-white mb-6 border-b border-white/10 pb-2">Siparişler</h3><div class="max-h-[400px] overflow-y-auto custom-scrollbar pr-2">${oHtml || 'Sipariş yok'}</div></div>
                 </div>`;
         }
 
-        /* --- HELPER FUNCTIONS --- */
+        /* --- HELPERS --- */
         function toggleAuth(t) { document.getElementById('login-form').classList.toggle('hidden'); document.getElementById('register-form').classList.toggle('hidden'); }
         function toggleCart() { const m=document.getElementById('cart-modal'), p=document.getElementById('cart-panel'); if(m.classList.contains('hidden')){m.classList.remove('hidden');setTimeout(()=>p.classList.remove('translate-x-full'),10)}else{p.classList.add('translate-x-full');setTimeout(()=>m.classList.add('hidden'),300)} }
         function addToCart(id) { cart.push(PRODUCTS.find(p=>p.id===id)); showToast('Sepete eklendi!', 'success'); updateCartUI(); }
@@ -507,7 +425,6 @@
         function sendTicket() { const m=document.getElementById('contact-msg').value; if(!m.trim())return; const t=JSON.parse(localStorage.getItem(DB_KEYS.TICKETS)); t.push({id:Date.now(), userId:getCurrentUser().id, message:m, status:'open'}); localStorage.setItem(DB_KEYS.TICKETS,JSON.stringify(t)); showToast('Gönderildi.', 'success'); router('dashboard'); }
         function adminReplyTicket(id) { const r=document.getElementById(`reply-${id}`).value; if(!r.trim())return; const t=JSON.parse(localStorage.getItem(DB_KEYS.TICKETS)), idx=t.findIndex(x=>x.id===id); t[idx].reply=r; t[idx].status='closed'; localStorage.setItem(DB_KEYS.TICKETS,JSON.stringify(t)); showToast('Yanıtlandı.', 'success'); router('admin'); }
         function adminManageOrder(id) { const o=JSON.parse(localStorage.getItem(DB_KEYS.ORDERS)), idx=o.findIndex(x=>x.id===id); if(confirm('Aktif edilsin mi?')){ const m=prompt("Mesaj:", o[idx].adminMessage||"Kurulum tamamlandı."); if(m!==null){ o[idx].status='Aktif'; o[idx].adminMessage=m; localStorage.setItem(DB_KEYS.ORDERS,JSON.stringify(o)); showToast('Güncellendi.', 'success'); router('admin'); }}}
-        function adminAddBalancePrompt(id) { showToast('Bakiye ekleme API henüz hazır değil.', 'warning'); }
         function formatCurrency(v) { return new Intl.NumberFormat('tr-TR', {style:'currency', currency:'TRY'}).format(v); }
         function showToast(m,t){ const el=document.getElementById('toast'), ic=document.getElementById('toast-icon'), ms=document.getElementById('toast-message'); ms.textContent=m; ic.className=`fa-solid ${t==='success'?'fa-circle-check text-cyber-success':'fa-circle-exclamation text-cyber-danger'} text-xl`; el.className=`fixed bottom-5 right-5 z-[70] transform transition-all duration-300 glass px-6 py-4 rounded-lg border-l-4 shadow-lg flex items-center gap-3 ${t==='success'?'border-cyber-success':'border-cyber-danger'}`; requestAnimationFrame(()=>el.classList.remove('translate-y-20','opacity-0')); setTimeout(()=>el.classList.add('translate-y-20','opacity-0'),3000); }
         
