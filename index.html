@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberHost | Next Gen Hosting</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Outfit', 'sans-serif'] },
+                    colors: {
+                        cyber: {
+                            black: '#0a0a0a', dark: '#13131f', primary: '#00f3ff',
+                            secondary: '#bc13fe', success: '#00ff9d', warning: '#f59e0b', danger: '#ff003c'
+                        }
+                    },
+                    animation: {
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                        'float': 'float 3s ease-in-out infinite',
+                        'slide-in': 'slideIn 0.5s ease-out forwards',
+                        'scroll': 'scroll 40s linear infinite',
+                    },
+                    keyframes: {
+                        glow: { '0%': { boxShadow: '0 0 5px #00f3ff, 0 0 10px #00f3ff' }, '100%': { boxShadow: '0 0 20px #bc13fe, 0 0 30px #bc13fe' } },
+                        float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } },
+                        slideIn: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+                        scroll: { '0%': { transform: 'translateX(0)' }, '100%': { transform: 'translateX(-50%)' } }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #050505;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(188, 19, 254, 0.15) 0%, transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(0, 243, 255, 0.15) 0%, transparent 25%);
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+        .glass { background: rgba(19, 19, 31, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); }
+        .glass-card { background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease; }
+        .glass-card:hover { border-color: rgba(0, 243, 255, 0.5); box-shadow: 0 0 20px rgba(0, 243, 255, 0.2); transform: translateY(-5px); }
+        ::-webkit-scrollbar { width: 8px; } ::-webkit-scrollbar-track { background: #0a0a0a; } ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; } ::-webkit-scrollbar-thumb:hover { background: #00f3ff; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; } .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); } .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
+        .neon-text { text-shadow: 0 0 10px rgba(0, 243, 255, 0.7); }
+        .hide { display: none !important; }
+        .scroller { mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col">
+
+    <nav class="fixed top-0 w-full z-50 glass border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex-shrink-0 cursor-pointer" onclick="router('home')">
+                    <span class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyber-primary to-cyber-secondary neon-text">
+                        CYBER<span class="text-white">HOST</span>
+                    </span>
+                </div>
+                
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a onclick="router('home')" class="cursor-pointer hover:text-cyber-primary px-3 py-2 rounded-md text-sm font-medium transition-colors">Ana Sayfa</a>
+                        <a onclick="router('products')" class="cursor-pointer hover:text-cyber-primary px-3 py-2 rounded-md text-sm font-medium transition-colors">Sunucular</a>
+                        <a onclick="router('contact')" class="cursor-pointer hover:text-cyber-primary px-3 py-2 rounded-md text-sm font-medium transition-colors">Destek</a>
+                        <a id="nav-admin" onclick="router('admin')" class="hidden cursor-pointer text-cyber-danger hover:text-red-400 px-3 py-2 rounded-md text-sm font-medium transition-colors">Admin Panel</a>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <div id="user-balance-display" class="hidden md:flex flex-col items-end text-right">
+                        <span class="text-xs text-gray-400">Bakiye</span>
+                        <span class="text-cyber-success font-bold font-mono" id="nav-balance">0.00 TL</span>
+                    </div>
+
+                    <button onclick="toggleCart()" class="relative p-2 text-gray-400 hover:text-white transition-colors">
+                        <i class="fa-solid fa-cart-shopping text-xl"></i>
+                        <span id="cart-count" class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-black transform translate-x-1/4 -translate-y-1/4 bg-cyber-primary rounded-full">0</span>
+                    </button>
+
+                    <div id="auth-buttons">
+                        <button onclick="router('auth')" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all backdrop-blur-sm border border-white/10">
+                            Giriş Yap
+                        </button>
+                    </div>
+                    
+                    <div id="user-menu" class="hidden relative group">
+                        <button class="flex items-center gap-2 text-white hover:text-cyber-primary transition-colors">
+                            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-cyber-primary to-cyber-secondary flex items-center justify-center font-bold">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                        </button>
+                        <div class="absolute right-0 mt-2 w-48 bg-cyber-dark glass rounded-md shadow-lg py-1 border border-white/10 hidden group-hover:block z-50">
+                            <a onclick="router('dashboard')" class="block px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white cursor-pointer">Hesabım</a>
+                            <a onclick="logout()" class="block px-4 py-2 text-sm text-red-400 hover:bg-white/5 cursor-pointer">Çıkış Yap</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main id="app" class="flex-grow pt-24 pb-12 px-0 w-full relative overflow-hidden"></main>
+
+    <div id="cart-modal" class="fixed inset-0 z-[60] hidden">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="toggleCart()"></div>
+        <div class="absolute right-0 top-0 h-full w-full max-w-md bg-cyber-dark border-l border-white/10 shadow-2xl transform transition-transform duration-300 translate-x-full" id="cart-panel">
+            <div class="h-full flex flex-col glass">
+                <div class="px-6 py-4 border-b border-white/10 flex justify-between items-center">
+                    <h2 class="text-xl font-bold text-white"><i class="fa-solid fa-basket-shopping mr-2 text-cyber-primary"></i>Sepetim</h2>
+                    <button onclick="toggleCart()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+                </div>
+                <div class="flex-1 overflow-y-auto p-6 space-y-4" id="cart-items"></div>
+                <div class="p-6 border-t border-white/10 bg-black/20">
+                    <div class="flex justify-between mb-4 text-lg font-bold">
+                        <span>Toplam:</span>
+                        <span class="text-cyber-primary" id="cart-total">0.00 TL</span>
+                    </div>
+                    <button onclick="checkout()" class="w-full bg-gradient-to-r from-cyber-primary to-cyber-secondary text-white font-bold py-3 px-4 rounded hover:opacity-90 transition-opacity shadow-lg shadow-cyber-primary/20">
+                        Ödemeyi Tamamla
+                    </button>
+                    <p class="text-xs text-center text-gray-500 mt-2">Ödeme bakiyenizden düşülecektir.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="fixed bottom-5 right-5 z-[70] transform transition-all duration-300 translate-y-20 opacity-0">
+        <div class="glass px-6 py-4 rounded-lg border-l-4 shadow-lg flex items-center gap-3">
+            <i id="toast-icon" class="fa-solid"></i>
+            <span id="toast-message" class="font-medium"></span>
+        </div>
+    </div>
+
+    <script>
+        /* --- AYARLAR & SABİTLER --- */
+        // Artık veritabanı uzakta olduğu için buradaki key'ler sadece oturum (session) için.
+        const DB_KEYS = {
+            CURRENT_USER: 'cyberhost_session_user', // Sadece giriş yapmış kullanıcıyı hatırlar
+            ORDERS: 'cyberhost_local_orders', // Siparişleri şimdilik yerel tutuyoruz (Backend API yazdığında burası da değişecek)
+            TICKETS: 'cyberhost_local_tickets'
+        };
+
+        const PRODUCTS = [
+            { id: 1, name: 'Başlangıç VDS', cpu: '1 Core', ram: '2GB RAM', disk: '30GB NVMe', price: 49.90, icon: 'fa-server' },
+            { id: 2, name: 'Ekonomik VDS', cpu: '2 Core', ram: '4GB RAM', disk: '60GB NVMe', price: 89.90, icon: 'fa-server' },
+            { id: 3, name: 'Pro VDS', cpu: '4 Core', ram: '8GB RAM', disk: '120GB NVMe', price: 159.90, icon: 'fa-server' },
+            { id: 4, name: 'Ultra VDS', cpu: '6 Core', ram: '16GB RAM', disk: '250GB NVMe', price: 299.90, icon: 'fa-microchip' },
+            { id: 5, name: 'Oyun Sunucusu (Giriş)', cpu: 'Ryzen 9 5950X 1 Core', ram: '4GB DDR4', disk: '50GB NVMe', price: 120.00, icon: 'fa-gamepad' },
+            { id: 6, name: 'Oyun Sunucusu (Pro)', cpu: 'Ryzen 9 5950X 4 Core', ram: '16GB DDR4', disk: '150GB NVMe', price: 450.00, icon: 'fa-gamepad' },
+            { id: 7, name: 'DDoS Koruması (L7)', cpu: 'Gelişmiş Filtreleme', ram: '7/24 Destek', disk: 'Yurt Dışı', price: 250.00, icon: 'fa-shield-halved' },
+            { id: 8, name: 'Web Hosting (Sınırsız)', cpu: 'cPanel', ram: 'Limitsiz Trafik', disk: 'Limitsiz Alan', price: 35.00, icon: 'fa-globe' },
+            { id: 9, name: 'Dedicated E5', cpu: 'Dual Xeon E5', ram: '128GB RAM', disk: '2x1TB SSD', price: 1200.00, icon: 'fa-database' },
+            { id: 10, name: 'Dedicated i9', cpu: 'i9 13900K', ram: '64GB DDR5', disk: '2TB NVMe', price: 2800.00, icon: 'fa-rocket' },
+        ];
+
+        const REVIEWS = [
+            { user: "Ahmet K.", product: "Pro VDS", comment: "Hız inanılmaz, oyun sunucumda 0 lag var!", rating: 5 },
+            { user: "Merve Y.", product: "Web Hosting", comment: "Destek ekibi 5 dakikada dönüş yaptı, harikasınız.", rating: 5 },
+            { user: "Caner D.", product: "Dedicated i9", comment: "Performans canavarı. Bu fiyata bu kalite yok.", rating: 5 },
+            { user: "Selin B.", product: "Ekonomik VDS", comment: "Öğrenci dostu fiyatlar, panel çok kullanışlı.", rating: 4 },
+            { user: "Gamer_34", product: "DDoS Koruması", comment: "Saldırılar anında kesildi, teşekkürler CyberHost.", rating: 5 },
+            { user: "TechMaster", product: "Ultra VDS", comment: "NVMe diskler sayesinde IO değerleri uçuyor.", rating: 5 },
+        ];
+
+        let cart = [];
+
+        /* --- BAŞLATMA --- */
+        function init() {
+            // Not: Artık "users" dizisi oluşturmuyoruz çünkü kullanıcılar Neon Veritabanında.
+            
+            // Yerel depolamada sipariş/ticket yoksa boş oluştur (Hata vermemesi için)
+            if (!localStorage.getItem(DB_KEYS.ORDERS)) localStorage.setItem(DB_KEYS.ORDERS, JSON.stringify([]));
+            if (!localStorage.getItem(DB_KEYS.TICKETS)) localStorage.setItem(DB_KEYS.TICKETS, JSON.stringify([]));
+
+            checkAuth();
+            router('home');
+        }
+
+        /* --- KİMLİK DOĞRULAMA (GERÇEK BACKEND BAĞLANTISI) --- */
+        function getCurrentUser() {
+            return JSON.parse(localStorage.getItem(DB_KEYS.CURRENT_USER));
+        }
+
+        function checkAuth() {
+            const user = getCurrentUser();
+            const els = {
+                auth: document.getElementById('auth-buttons'),
+                menu: document.getElementById('user-menu'),
+                admin: document.getElementById('nav-admin'),
+                balDisp: document.getElementById('user-balance-display'),
+                bal: document.getElementById('nav-balance')
+            };
+
+            if (user) {
+                els.auth.classList.add('hidden');
+                els.menu.classList.remove('hidden');
+                els.balDisp.classList.remove('hidden');
+                els.bal.textContent = formatCurrency(user.balance);
+                
+                // Neon veritabanından gelen rolü kontrol et
+                if (user.role === 'admin') {
+                    els.admin.classList.remove('hidden');
+                } else {
+                    els.admin.classList.add('hidden');
+                }
+            } else {
+                els.auth.classList.remove('hidden');
+                els.menu.classList.add('hidden');
+                els.balDisp.classList.add('hidden');
+                els.admin.classList.add('hidden');
+            }
+        }
+
+        // BU FONKSİYON ARTIK NETLIFY ÜZERİNDEN NEON DB'YE BAĞLANIYOR
+        async function login(username, password) {
+            showToast('Giriş yapılıyor, lütfen bekleyin...', 'info');
+
+            try {
+                // Burada oluşturduğun Netlify Function'a istek atıyoruz
+                const response = await fetch('/.netlify/functions/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    // Giriş Başarılı!
+                    localStorage.setItem(DB_KEYS.CURRENT_USER, JSON.stringify(data.user));
+                    showToast('Giriş başarılı! Yönlendiriliyorsunuz...', 'success');
+                    checkAuth();
+                    router('dashboard');
+                } else {
+                    // Şifre yanlış veya kullanıcı yok
+                    showToast(data.message || 'Kullanıcı adı veya şifre hatalı.', 'error');
+                }
+            } catch (error) {
+                console.error("Login Hatası:", error);
+                showToast('Sunucuya bağlanılamadı. Netlify Function ayarlarını kontrol et.', 'error');
+            }
+        }
+
+        function register(username, password) {
+            // Şimdilik kayıt olma kısmını kapattık veya uyarı verebiliriz.
+            // Çünkü kayıt için de ayrı bir backend fonksiyonu (register.js) yazman gerekecek.
+            showToast('Şu anlık yeni kayıtlar kapalıdır. Lütfen Admin ile iletişime geçin.', 'warning');
+        }
+
+        function logout() {
+            localStorage.removeItem(DB_KEYS.CURRENT_USER);
+            cart = [];
+            updateCartUI();
+            checkAuth();
+            router('home');
+            showToast('Çıkış yapıldı.', 'info');
+        }
+
+        /* --- SAYFA YÖNLENDİRME --- */
+        function router(page) {
+            const app = document.getElementById('app');
+            const user = getCurrentUser();
+
+            if ((page === 'dashboard' || page === 'cart' || page === 'contact') && !user) {
+                showToast('Lütfen önce giriş yapın.', 'error');
+                router('auth');
+                return;
+            }
+            if (page === 'admin' && (!user || user.role !== 'admin')) {
+                router('home');
+                return;
+            }
+
+            window.scrollTo(0,0);
+            
+            // CSS ayarı
+            app.className = page === 'home' ? "flex-grow pt-24 pb-0 w-full relative overflow-hidden" : "flex-grow pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full relative";
+            
+            if(page === 'home') app.innerHTML = renderHome();
+            else if(page === 'auth') user ? router('dashboard') : app.innerHTML = renderAuth();
+            else if(page === 'products') app.innerHTML = renderProducts();
+            else if(page === 'dashboard') app.innerHTML = renderDashboard();
+            else if(page === 'contact') app.innerHTML = renderContact();
+            else if(page === 'admin') app.innerHTML = renderAdmin();
+        }
+
+        /* --- SAYFA TASARIMLARI (HTML) --- */
+        function renderHome() {
+            const cards = REVIEWS.map(r => `
+                <div class="glass-card w-[350px] p-6 rounded-xl mx-4 flex-shrink-0 border border-white/5">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-cyber-primary to-blue-600 flex items-center justify-center font-bold text-black">${r.user.charAt(0)}</div>
+                            <div><h4 class="font-bold text-white text-sm">${r.user}</h4><span class="text-xs text-cyber-primary">${r.product}</span></div>
+                        </div>
+                        <div class="text-yellow-400 text-xs">${Array(r.rating).fill('<i class="fa-solid fa-star"></i>').join('')}</div>
+                    </div>
+                    <p class="text-gray-300 text-sm italic">"${r.comment}"</p>
+                </div>`).join('');
+
+            return `
+                <div class="max-w-7xl mx-auto px-4 flex flex-col items-center justify-center min-h-[70vh] text-center animate-slide-in">
+                    <div class="absolute top-20 opacity-30 animate-float pointer-events-none"><i class="fa-solid fa-cloud text-[15rem] text-cyber-primary blur-3xl"></i></div>
+                    <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight relative z-10">GELECEĞİN <br><span class="bg-clip-text text-transparent bg-gradient-to-r from-cyber-primary to-cyber-secondary neon-text">PERFORMANSI</span></h1>
+                    <p class="text-xl text-gray-400 max-w-2xl mb-10 relative z-10">NVMe SSD diskler ve DDoS koruması ile projelerinizi ışık hızında barındırın.</p>
+                    <div class="flex gap-4 relative z-10">
+                        <button onclick="router('products')" class="bg-cyber-primary text-black font-bold py-3 px-8 rounded-full hover:shadow-[0_0_20px_#00f3ff] transition-all transform hover:scale-105">İncele</button>
+                        <button onclick="router('contact')" class="border border-white/20 hover:bg-white/10 text-white font-bold py-3 px-8 rounded-full transition-all">İletişim</button>
+                    </div>
+                    <div class="mt-24 grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-7xl mx-auto px-4">
+                        <div class="glass-card p-8 rounded-2xl text-left"><i class="fa-solid fa-bolt text-4xl text-cyber-primary mb-4"></i><h3 class="text-xl font-bold mb-2">Işık Hızı</h3><p class="text-gray-400 text-sm">En yeni nesil işlemciler.</p></div>
+                        <div class="glass-card p-8 rounded-2xl text-left"><i class="fa-solid fa-shield-cat text-4xl text-cyber-secondary mb-4"></i><h3 class="text-xl font-bold mb-2">Güvenli</h3><p class="text-gray-400 text-sm">Gelişmiş DDoS koruma.</p></div>
+                        <div class="glass-card p-8 rounded-2xl text-left"><i class="fa-solid fa-headset text-4xl text-cyber-success mb-4"></i><h3 class="text-xl font-bold mb-2">Destek</h3><p class="text-gray-400 text-sm">7/24 Yanınızdayız.</p></div>
+                    </div>
+                </div>
+                <div class="w-full mt-24 py-12 border-t border-white/5 bg-black/40 relative">
+                    <h2 class="text-center text-2xl font-bold text-white mb-8">Mutlu Müşteriler</h2>
+                    <div class="scroller w-full overflow-hidden flex">
+                        <div class="flex animate-scroll hover:[animation-play-state:paused]">${cards}${cards}</div>
+                    </div>
+                </div>`;
+        }
+
+        function renderAuth() {
+            return `
+                <div class="flex justify-center items-center min-h-[60vh] px-4">
+                    <div class="glass p-8 rounded-2xl w-full max-w-md shadow-2xl animate-slide-in relative overflow-hidden">
+                        <div id="login-form">
+                            <h2 class="text-3xl font-bold mb-6 text-center text-white">Giriş Yap</h2>
+                            <div class="space-y-4">
+                                <input type="text" id="login-user" class="w-full bg-black/30 border border-white/10 rounded p-3 text-white outline-none focus:border-cyber-primary" placeholder="Kullanıcı Adı">
+                                <input type="password" id="login-pass" class="w-full bg-black/30 border border-white/10 rounded p-3 text-white outline-none focus:border-cyber-primary" placeholder="Şifre">
+                                <button onclick="login(document.getElementById('login-user').value, document.getElementById('login-pass').value)" class="w-full bg-gradient-to-r from-cyber-primary to-cyber-secondary text-white font-bold py-3 rounded mt-4 hover:opacity-90">GİRİŞ</button>
+                                <p class="text-center text-sm text-gray-400 mt-4">Hesabın yok mu? <span onclick="toggleAuth('register')" class="text-cyber-primary cursor-pointer hover:underline">Kayıt Ol</span></p>
+                            </div>
+                        </div>
+                        <div id="register-form" class="hidden">
+                            <h2 class="text-3xl font-bold mb-6 text-center text-white">Kayıt Ol</h2>
+                            <div class="space-y-4">
+                                <input type="text" id="reg-user" class="w-full bg-black/30 border border-white/10 rounded p-3 text-white outline-none focus:border-cyber-secondary" placeholder="Kullanıcı Adı">
+                                <input type="password" id="reg-pass" class="w-full bg-black/30 border border-white/10 rounded p-3 text-white outline-none focus:border-cyber-secondary" placeholder="Şifre">
+                                <button onclick="register(document.getElementById('reg-user').value, document.getElementById('reg-pass').value)" class="w-full bg-gradient-to-r from-cyber-secondary to-cyber-primary text-white font-bold py-3 rounded mt-4 hover:opacity-90">KAYIT OL</button>
+                                <p class="text-center text-sm text-gray-400 mt-4">Zaten üye misin? <span onclick="toggleAuth('login')" class="text-cyber-secondary cursor-pointer hover:underline">Giriş Yap</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+        }
+
+        function renderProducts() {
+            return `
+                <div class="animate-slide-in">
+                    <h2 class="text-3xl font-bold mb-8 border-l-4 border-cyber-primary pl-4">Sunucu Paketleri</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        ${PRODUCTS.map(p => `
+                            <div class="glass-card rounded-xl p-6 relative overflow-hidden group">
+                                <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity transform group-hover:scale-125 duration-500"><i class="fa-solid ${p.icon} text-6xl text-white"></i></div>
+                                <h3 class="text-xl font-bold mb-1 text-white group-hover:text-cyber-primary transition-colors">${p.name}</h3>
+                                <p class="text-2xl font-mono text-cyber-primary mb-6">${p.price.toFixed(2)} ₺ <span class="text-xs text-gray-400">/ay</span></p>
+                                <ul class="space-y-2 mb-6 text-sm text-gray-300">
+                                    <li><i class="fa-solid fa-microchip w-6 text-cyber-secondary"></i> ${p.cpu}</li>
+                                    <li><i class="fa-solid fa-memory w-6 text-cyber-secondary"></i> ${p.ram}</li>
+                                    <li><i class="fa-solid fa-hard-drive w-6 text-cyber-secondary"></i> ${p.disk}</li>
+                                </ul>
+                                <button onclick="addToCart(${p.id})" class="w-full bg-white/5 hover:bg-cyber-primary hover:text-black border border-white/10 text-white font-bold py-2 px-4 rounded transition-all"><i class="fa-solid fa-cart-plus mr-2"></i> Sepete Ekle</button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>`;
+        }
+
+        function renderDashboard() {
+            const user = getCurrentUser();
+            const tickets = JSON.parse(localStorage.getItem(DB_KEYS.TICKETS)).filter(t => t.userId === user.id);
+            const orders = JSON.parse(localStorage.getItem(DB_KEYS.ORDERS)).filter(o => o.userId === user.id).reverse();
+
+            const ticketsHtml = tickets.length ? tickets.map(t => `
+                <div class="glass p-4 rounded mb-2 border-l-2 ${t.status === 'open' ? 'border-cyber-primary' : 'border-green-500'}">
+                    <div class="flex justify-between"><p class="text-white">${t.message}</p><span class="text-xs px-2 py-1 rounded bg-white/10">${t.status}</span></div>
+                    ${t.reply ? `<div class="mt-2 text-sm text-gray-300 bg-white/5 p-2 rounded"><span class="text-cyber-secondary font-bold">Admin:</span> ${t.reply}</div>` : ''}
+                </div>`).join('') : '<div class="text-gray-500 text-sm">Talep yok.</div>';
+
+            const ordersHtml = orders.length ? orders.map(o => `
+                <div class="bg-white/5 p-4 rounded mb-2 border border-white/5">
+                    <div class="flex justify-between mb-2">
+                        <span class="text-white font-bold text-sm">#${o.id}</span>
+                        <div class="flex gap-2"><span class="text-xs px-2 border rounded ${o.status==='Aktif'?'text-green-400 border-green-400':'text-yellow-400 border-yellow-400'}">${o.status||'Hazırlanıyor'}</span><span class="text-cyber-primary font-mono text-sm">${formatCurrency(o.total)}</span></div>
+                    </div>
+                    <div class="text-xs text-gray-400">Paketler: ${o.items.map(i=>i.name).join(', ')}</div>
+                    ${o.adminMessage ? `<div class="mt-2 p-2 bg-cyber-primary/10 border-l-2 border-cyber-primary text-xs text-gray-200"><b>Mesaj:</b> ${o.adminMessage}</div>` : ''}
+                </div>`).join('') : '<div class="text-gray-500 text-sm">Sipariş yok.</div>';
+
+            return `
+                <div class="animate-slide-in grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-1 space-y-6">
+                        <div class="glass p-6 rounded-2xl text-center">
+                            <div class="w-20 h-20 mx-auto rounded-full bg-gradient-to-tr from-cyber-primary to-cyber-secondary flex items-center justify-center text-3xl font-bold mb-4"><i class="fa-solid fa-user"></i></div>
+                            <h2 class="text-2xl font-bold text-white">${user.username}</h2>
+                            <p class="text-gray-400 capitalize">${user.role}</p>
+                            <div class="mt-6 p-4 bg-black/30 rounded-xl border border-white/5">
+                                <p class="text-sm text-gray-400">Bakiye</p><p class="text-3xl font-mono text-cyber-success my-2">${formatCurrency(user.balance)}</p>
+                                <a href="#" class="block w-full bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold py-2 rounded">Bakiye Yükle</a>
+                            </div>
+                            <button onclick="logout()" class="mt-4 text-red-400 text-sm">Çıkış Yap</button>
+                        </div>
+                        <div class="glass p-6 rounded-2xl h-full">
+                            <div class="flex justify-between mb-6"><h3 class="font-bold text-white">Destek</h3><button onclick="router('contact')" class="text-xs bg-cyber-primary text-black px-3 py-1 rounded font-bold">Yeni</button></div>
+                            <div class="space-y-4 max-h-[300px] overflow-y-auto custom-scrollbar pr-2">${ticketsHtml}</div>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-2">
+                        <div class="glass p-6 rounded-2xl h-full"><h3 class="text-xl font-bold text-white mb-6 border-b border-white/10 pb-2">Siparişlerim</h3><div class="space-y-4 overflow-y-auto max-h-[700px] custom-scrollbar pr-2">${ordersHtml}</div></div>
+                    </div>
+                </div>`;
+        }
+
+        function renderContact() {
+            return `<div class="max-w-2xl mx-auto animate-slide-in"><div class="glass p-8 rounded-2xl"><h2 class="text-3xl font-bold mb-2 text-white">İletişim</h2><p class="text-gray-400 mb-6">Sorunlarınızı bize iletin.</p><textarea id="contact-msg" rows="5" class="w-full bg-black/30 border border-white/10 rounded p-3 text-white outline-none focus:border-cyber-secondary" placeholder="Mesajınız..."></textarea><button onclick="sendTicket()" class="mt-4 bg-gradient-to-r from-cyber-secondary to-cyber-primary text-white font-bold py-3 px-8 rounded">Gönder</button></div></div>`;
+        }
+
+        function renderAdmin() {
+            // NOT: Gerçek bir sistemde bu listeleri de veritabanından (API) çekmelisin.
+            // Şimdilik sadece Admin girişi için DB kullanıyoruz, veriler hala yerelde duruyor (demo amaçlı).
+            const users = []; // Kullanıcı listesi için de ayrı endpoint lazım.
+            const tickets = JSON.parse(localStorage.getItem(DB_KEYS.TICKETS));
+            const orders = JSON.parse(localStorage.getItem(DB_KEYS.ORDERS)).sort((a,b) => new Date(b.date) - new Date(a.date));
+
+            const tHtml = tickets.map(t => {
+                const uName = `User#${t.userId}`; // Basitlik için ID gösteriyoruz
+                return `
+                    <div class="bg-white/5 p-4 rounded mb-2 border border-white/5">
+                        <div class="flex justify-between text-sm mb-2"><span class="text-cyber-primary font-bold">${uName}</span><span class="text-gray-500 text-xs">ID:${t.id}</span></div>
+                        <p class="text-gray-300 text-sm">"${t.message}"</p>
+                        ${t.reply ? `<div class="text-xs text-green-400 border-t border-white/10 pt-2">Cevap: ${t.reply}</div>` : 
+                        `<div class="flex gap-2 mt-2"><input id="reply-${t.id}" class="flex-1 bg-black/50 border border-white/10 rounded px-2 text-sm text-white"><button onclick="adminReplyTicket(${t.id})" class="bg-cyber-success text-black px-3 text-xs font-bold rounded">Yanıtla</button></div>`}
+                    </div>`;
+            }).join('');
+
+            // Admin panelinde kullanıcı listesini şimdilik boş gösteriyoruz (API lazım)
+            const uHtml = '<div class="text-gray-500 text-sm p-4">Kullanıcı listesini görmek için "/functions/getUsers" API\'si yazılmalı.</div>';
+
+            const oHtml = orders.map(o => {
+                const uName = `User#${o.userId}`;
+                return `
+                    <div class="grid grid-cols-12 gap-2 items-center bg-white/5 p-4 rounded mb-2 border border-white/5 text-sm">
+                        <div class="col-span-1 text-gray-500">#${o.id.toString().slice(-4)}</div>
+                        <div class="col-span-2 text-white truncate">${uName}</div>
+                        <div class="col-span-3 text-gray-400 truncate">${o.items.map(i => i.name).join(',')}</div>
+                        <div class="col-span-2 ${o.status==='Aktif'?'text-green-400':'text-yellow-400'} text-xs font-bold uppercase">${o.status||'Hazırlanıyor'}</div>
+                        <div class="col-span-2 text-right font-mono text-cyber-primary">${formatCurrency(o.total)}</div>
+                        <div class="col-span-2 text-right"><button onclick="adminManageOrder(${o.id})" class="bg-white/10 hover:bg-cyber-primary hover:text-black text-white px-2 py-1 rounded text-xs">Yönet</button></div>
+                    </div>`;
+            }).join('');
+
+            return `
+                <div class="animate-slide-in space-y-8">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="glass p-6 rounded-2xl h-[500px] flex flex-col">
+                            <h3 class="font-bold text-white mb-4 border-b border-white/10 pb-2">Destek Talepleri</h3>
+                            <div class="flex-1 overflow-y-auto custom-scrollbar pr-2">${tHtml || 'Yok'}</div>
+                        </div>
+                        <div class="space-y-8 h-[500px] flex flex-col">
+                            <div class="glass p-6 rounded-2xl">
+                                <h3 class="text-sm font-bold text-gray-400 mb-4">Özet</h3>
+                                <div class="grid grid-cols-2 gap-4 text-center">
+                                    <div class="bg-black/30 p-4 rounded"><span class="text-2xl font-bold text-cyber-primary">?</span><span class="block text-xs text-gray-400">Üye</span></div>
+                                    <div class="bg-black/30 p-4 rounded"><span class="text-2xl font-bold text-cyber-secondary">${orders.length}</span><span class="block text-xs text-gray-400">Sipariş</span></div>
+                                </div>
+                            </div>
+                            <div class="glass p-6 rounded-2xl flex-1 flex flex-col">
+                                <h3 class="font-bold text-white mb-4 border-b border-white/10 pb-2">Kullanıcılar (DB)</h3>
+                                <div class="flex-1 overflow-y-auto custom-scrollbar pr-2">${uHtml}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass p-6 rounded-2xl">
+                        <h3 class="font-bold text-white mb-6 border-b border-white/10 pb-2">Siparişler</h3>
+                        <div class="max-h-[400px] overflow-y-auto custom-scrollbar pr-2">${oHtml || 'Sipariş yok'}</div>
+                    </div>
+                </div>`;
+        }
+
+        /* --- YARDIMCI FONKSİYONLAR --- */
+        function toggleAuth(t) {
+            document.getElementById('login-form').classList.toggle('hidden');
+            document.getElementById('register-form').classList.toggle('hidden');
+        }
+
+        function toggleCart() {
+            const m = document.getElementById('cart-modal'), p = document.getElementById('cart-panel');
+            if (m.classList.contains('hidden')) {
+                m.classList.remove('hidden');
+                setTimeout(() => p.classList.remove('translate-x-full'), 10);
+            } else {
+                p.classList.add('translate-x-full');
+                setTimeout(() => m.classList.add('hidden'), 300);
+            }
+        }
+
+        function addToCart(id) {
+            cart.push(PRODUCTS.find(p => p.id === id));
+            showToast('Sepete eklendi!', 'success');
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const c = document.getElementById('cart-items'), t = document.getElementById('cart-total');
+            document.getElementById('cart-count').textContent = cart.length;
+            if (!cart.length) {
+                c.innerHTML = '<div class="text-center text-gray-500 mt-10">Boş</div>';
+                t.textContent = formatCurrency(0);
+                return;
+            }
+            c.innerHTML = cart.map((i, x) => `
+                <div class="flex justify-between items-center bg-white/5 p-3 rounded border border-white/5">
+                    <div><h4 class="font-bold text-white text-sm">${i.name}</h4><p class="text-cyber-primary text-xs">${formatCurrency(i.price)}</p></div>
+                    <button onclick="cart.splice(${x},1);updateCartUI()" class="text-red-400"><i class="fa-solid fa-trash"></i></button>
+                </div>`).join('');
+            t.textContent = formatCurrency(cart.reduce((a, b) => a + b.price, 0));
+        }
+
+        function checkout() {
+            const u = getCurrentUser();
+            if (!u) { router('auth'); return toggleCart(); }
+            if (!cart.length) return;
+            const tot = cart.reduce((a, b) => a + b.price, 0);
+            
+            // Not: Bakiye düşme işlemini de backend'de yapmalısın. Şimdilik sadece frontend kontrolü var.
+            if (u.balance < tot) return showToast('Yetersiz Bakiye!', 'error');
+            
+            u.balance -= tot;
+            localStorage.setItem(DB_KEYS.CURRENT_USER, JSON.stringify(u));
+            
+            const o = JSON.parse(localStorage.getItem(DB_KEYS.ORDERS));
+            o.push({ id: Date.now(), userId: u.id, items: cart, total: tot, date: new Date().toISOString(), status: 'Hazırlanıyor' });
+            localStorage.setItem(DB_KEYS.ORDERS, JSON.stringify(o));
+            
+            cart = []; updateCartUI(); toggleCart(); checkAuth(); showToast('Sipariş alındı!', 'success'); router('dashboard');
+        }
+
+        function sendTicket() {
+            const m = document.getElementById('contact-msg').value;
+            if (!m.trim()) return;
+            const t = JSON.parse(localStorage.getItem(DB_KEYS.TICKETS));
+            t.push({ id: Date.now(), userId: getCurrentUser().id, message: m, status: 'open' });
+            localStorage.setItem(DB_KEYS.TICKETS, JSON.stringify(t));
+            showToast('Gönderildi.', 'success');
+            router('dashboard');
+        }
+
+        function adminReplyTicket(id) {
+            const r = document.getElementById(`reply-${id}`).value;
+            if (!r.trim()) return;
+            const t = JSON.parse(localStorage.getItem(DB_KEYS.TICKETS)), idx = t.findIndex(x => x.id === id);
+            t[idx].reply = r; t[idx].status = 'closed';
+            localStorage.setItem(DB_KEYS.TICKETS, JSON.stringify(t));
+            showToast('Yanıtlandı.', 'success');
+            router('admin');
+        }
+
+        function adminManageOrder(id) {
+            const o = JSON.parse(localStorage.getItem(DB_KEYS.ORDERS)), idx = o.findIndex(x => x.id === id);
+            if (confirm('Aktif edilsin mi?')) {
+                const m = prompt("Mesaj (IP vb):", o[idx].adminMessage || "Kurulum tamamlandı.");
+                if (m !== null) {
+                    o[idx].status = 'Aktif'; o[idx].adminMessage = m;
+                    localStorage.setItem(DB_KEYS.ORDERS, JSON.stringify(o));
+                    showToast('Güncellendi.', 'success');
+                    router('admin');
+                }
+            }
+        }
+
+        function formatCurrency(v) { return new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(v); }
+
+        function showToast(m, t) {
+            const el = document.getElementById('toast'), ic = document.getElementById('toast-icon'), ms = document.getElementById('toast-message');
+            ms.textContent = m;
+            ic.className = `fa-solid ${t === 'success' ? 'fa-circle-check text-cyber-success' : 'fa-circle-exclamation text-cyber-danger'} text-xl`;
+            el.className = `fixed bottom-5 right-5 z-[70] transform transition-all duration-300 glass px-6 py-4 rounded-lg border-l-4 shadow-lg flex items-center gap-3 ${t === 'success' ? 'border-cyber-success' : 'border-cyber-danger'}`;
+            requestAnimationFrame(() => el.classList.remove('translate-y-20', 'opacity-0'));
+            setTimeout(() => el.classList.add('translate-y-20', 'opacity-0'), 3000);
+        }
+
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
