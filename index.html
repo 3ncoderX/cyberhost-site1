@@ -251,10 +251,38 @@
             }
         }
 
-        function register(username, password) {
-            // Şimdilik kayıt olma kısmını kapattık veya uyarı verebiliriz.
-            // Çünkü kayıt için de ayrı bir backend fonksiyonu (register.js) yazman gerekecek.
-            showToast('Şu anlık yeni kayıtlar kapalıdır. Lütfen Admin ile iletişime geçin.', 'warning');
+        /* --- YENİ KAYIT SİSTEMİ (BACKEND BAĞLANTILI) --- */
+        async function register(username, password) {
+            if (!username || !password) {
+                showToast('Lütfen tüm alanları doldurun.', 'error');
+                return;
+            }
+
+            showToast('Kayıt yapılıyor...', 'info');
+
+            try {
+                // Netlify register fonksiyonuna istek atıyoruz
+                const response = await fetch('/.netlify/functions/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    showToast('Kayıt Başarılı! Şimdi giriş yapabilirsiniz.', 'success');
+                    // Formu temizle ve giriş ekranına geç
+                    document.getElementById('reg-user').value = '';
+                    document.getElementById('reg-pass').value = '';
+                    toggleAuth('login');
+                } else {
+                    showToast(data.message || 'Kayıt yapılamadı.', 'error');
+                }
+            } catch (error) {
+                console.error("Register Hatası:", error);
+                showToast('Sunucu hatası. Lütfen daha sonra deneyin.', 'error');
+            }
         }
 
         function logout() {
