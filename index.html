@@ -242,7 +242,7 @@
             listContainer.innerHTML = '<div class="text-gray-400 p-4 text-center"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Veriler çekiliyor...</div>';
 
             try {
-                const response = await fetch('/.netlify/functions/getUsers');
+                const response = await fetch('https://calm-daffodil-5a3b8c.netlify.app/.netlify/functions/getUser');
                 
                 if (response.status === 404) {
                     listContainer.innerHTML = '<div class="text-red-400 p-4 text-center">API Bulunamadı (404). Dosyayı yüklediniz mi?</div>';
